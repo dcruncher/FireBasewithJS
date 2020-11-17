@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>
+            Student Details
+        </title>
+        
+    </head>
+    <body>
+        <h1>
+            Student details
+        </h1>
+        
+            Enter roll no. <input type="text"id="roll"><br><br>
+            Enter name <input type="text" id ="name"> <br><br>
+            Enter department <input type = "text" id="dept"> <br><br>
+            Select Gender <select id="gender"> <option>Male</option><option>Female</option></select> <br><br>
+            <button id="insert">Insert</button>
+            <button id="select">Select</button>
+            <button id="update">Update</button>
+            <button id="delete">Delete</button>
+        
+            <br><br>
+            <span id= "RollNo"></span><br>
+            <span id= "StuName"></span><br>
+            <span id= "Dept"></span><br>
+            <span id= "Gen"></span><br>
+
+        <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-database.js"></script>
+
+        <script id = "MainScript">
+
+            var firebaseConfig = {
+                apiKey: "AIzaSyCoUlTIKdJCCuNWaw0kv18IBjy-JDKpTBY",
+                authDomain: "cloudproj-f0872.firebaseapp.com",
+                databaseURL: "https://cloudproj-f0872.firebaseio.com",
+                projectId: "cloudproj-f0872",
+                storageBucket: "cloudproj-f0872.appspot.com",
+                messagingSenderId: "600484472688",
+                appId: "1:600484472688:web:5a67141c39a6483748d1b5"
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+
+            var roll,name,dept,gen;
+            // Data Ready
+            function Ready()
+            {
+                roll = document.getElementById('roll').value;
+                name = document.getElementById('name').value;
+                dept = document.getElementById('dept').value;
+                gen = document.getElementById('gender').value;
+            }
+            // insert data
+            document.getElementById('insert').onclick= function() {
+                Ready();
+                firebase.database().ref('student/'+roll).set({
+                    Student_name: name,
+                    Gender : gen,
+                    Department : dept
+                });
+            alert('data inserted');
+            }
+            // select data
+            document.getElementById('select').onclick = function(){
+                Ready();
+                firebase.database().ref('student/'+roll).on('value',function(snapshot){
+                    document.getElementById('StuName').innerHTML = snapshot.val().Student_name;
+                    document.getElementById('Dept').innerHTML = snapshot.val().Department;
+                    document.getElementById('Gen').innerHTML = snapshot.val().Gender;
+                });
+                if(document.getElementById('StuName').innerHTML== "")
+                {
+                    document.getElementById('Dept').innerHTML="";
+                    document.getElementById('Gen').innerHTML="";
+                    alert('record not found');
+                }
+            }
+
+            // update data
+            document.getElementById('update').onclick = function(){
+                Ready();
+                firebase.database().ref('student/'+roll).update({
+                    Student_name: name,
+                    Gender : gen,
+                    Department : dept
+                });
+                alert('data updated');
+            }
+            //delete data
+            document.getElementById('delete').onclick= function(){
+                Ready();
+                firebase.database().ref('student/'+roll).remove();
+                alert('data removed');
+            }
+        </script>
+    </body>
+</html>
